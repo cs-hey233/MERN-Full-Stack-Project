@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const AutoIncrement = require('mongoose-sequence')(mongoose)
 
 const noteSchema = new mongoose.Schema(
     {
@@ -8,7 +7,7 @@ const noteSchema = new mongoose.Schema(
             required: true,
             ref: 'User'
         },
-        password: {
+        title: {
             type: String,
             required: true
         },
@@ -19,6 +18,10 @@ const noteSchema = new mongoose.Schema(
         completed: {
             type: Boolean,
             default: false
+        },
+        ticket: {
+            type: Number,
+            unique: true
         }
     },
     {
@@ -26,10 +29,12 @@ const noteSchema = new mongoose.Schema(
     }
 )
 
-noteSchema.plugin(AutoIncrement, {
-    inc_field: 'ticket',
-    id: 'ticketNums',
-    start_seq: 500
+noteSchema.pre('save', async function(next) {
+    if (this.isNew) {
+        const lastNote = await mongoose.model('Note').findOne().sort({ createdAt: -1 })
+        this.ticket = lastNote && lastNote.ticket ? lastNote.ticket + 1 : 500
+    }
+    next()
 })
 
 module.exports = mongoose.model('Note', noteSchema)
