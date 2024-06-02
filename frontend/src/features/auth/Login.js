@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { PulseLoader } from "react-spinners";
 import useTitle from "../../hooks/useTitle";
 import usePersist from "../../hooks/usePersist";
-import { useDispatch } from "react-redux";
 import { useLoginMutation } from './authApiSlice';
 
 const Login = () => {
@@ -17,7 +16,6 @@ const Login = () => {
     const [persist, setPersist] = usePersist()
 
     const navigate = useNavigate()
-    const dispatch = useDispatch()
 
     const [login, { isLoading }] = useLoginMutation()
 
