@@ -16,10 +16,11 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
+        {/* public routes */}
         <Route index element={<Public />} />
         <Route path="login" element={<Login />} />
 
-
+        {/* protected routes */}
         <Route element={<Prefetch />}>
           <Route path="dash" element={<DashLayout />}>
 
