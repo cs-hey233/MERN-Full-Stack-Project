@@ -4,6 +4,8 @@ import { PulseLoader } from "react-spinners";
 import useTitle from "../../hooks/useTitle";
 import usePersist from "../../hooks/usePersist";
 import { useLoginMutation } from './authApiSlice';
+import { setCredentials } from "./authSlice";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
     useTitle("Employee Login")
@@ -16,6 +18,7 @@ const Login = () => {
     const [persist, setPersist] = usePersist()
 
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const [login, { isLoading }] = useLoginMutation()
 
@@ -31,7 +34,8 @@ const Login = () => {
         e.preventDefault()
 
         try {
-            await login({ username, password }).unwrap() // unwrap will throw an error if failed
+            const {accessToken} = await login({ username, password }).unwrap() // unwrap will throw an error if failed
+            dispatch(setCredentials({ token: accessToken }))
             setUsername('')
             setPassword('')
             navigate('/dash')

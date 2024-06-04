@@ -36,7 +36,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
             }
         } else {
             if (refreshResult?.error?.status === 401) {
-                refreshResult.error.data.message = "Login expired."
+                refreshResult.error.data.message = "Login expired.jhnjkhkjhkjhjkh"
             }
             return refreshResult
         }

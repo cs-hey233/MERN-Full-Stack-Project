@@ -28,9 +28,9 @@ const login = asyncHandler(async (req, res) => {
 
     const accessToken = jwt.sign(
         {
-            UserInfo: {
-                username: user.username,
-                roles: user.roles
+            "UserInfo": {
+                "username": user.username,
+                "roles": user.roles
             }
         },
         process.env.ACCESS_TOKEN_SECRET,
@@ -39,15 +39,13 @@ const login = asyncHandler(async (req, res) => {
 
     const refreshToken = jwt.sign(
         {
-            UserInfo: {
-                username: user.username,
-                roles:user.roles
-            }
+                "username": user.username,
+                "roles":user.roles
         },
         process.env.REFRESH_TOKEN_SECRET,
         { expiresIn: '7d' }
     )
-    res.cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: 'None', maxAge: 7 * 24 * 60 * 60 * 1000 })
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 7 * 24 * 60 * 60 * 1000 })
     res.status(200).json({ accessToken })
 })
 
@@ -67,7 +65,7 @@ const refresh = asyncHandler(async (req, res) => {
 
     try {
         const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
-        const user = await User.findOne({ username: decoded.UserInfo.username })
+        const user = await User.findOne({ username: decoded.username })
         if (!user) {
             return res.status(404).json({ message: "User not found" })
         }
@@ -76,8 +74,7 @@ const refresh = asyncHandler(async (req, res) => {
             process.env.ACCESS_TOKEN_SECRET,
             { expiresIn: '15m' }
         )
-        res.cookie('accessToken', accessToken, { httpOnly: true, sameSite: 'None' })
-        res.status(200).json({ message: "Access token updated" })
+        res.status(200).json({ accessToken })
     } catch (err) {
         console.error(err)
         if (err.name === "TokenExpiredError") {
@@ -94,9 +91,6 @@ const refresh = asyncHandler(async (req, res) => {
 const logout = (req, res) => {
     if (req.cookies.refreshToken) {
         res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'None' })
-    }
-    if (req.cookies.accessToken) {
-        res.clearCookie('accessToken', { httpOnly: true, sameSite: 'None' })
     }
     res.status(200).json({ message: "Logged out successfully" })
 }
