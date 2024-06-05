@@ -75,8 +75,14 @@ const DashHeader = () => {
         }
     }
 
+    const handleLogout = async (e) => {
+        e.preventDefault()
+        await sendLogout()
+        navigate('/login')
+    }
+
     const logoutButton = (
-        <button className='icon-button' title="Logout" onClick={sendLogout}>
+        <button className='icon-button' title="Logout" onClick={handleLogout} >
             <FontAwesomeIcon icon={faRightFromBracket} />
         </button>
     )

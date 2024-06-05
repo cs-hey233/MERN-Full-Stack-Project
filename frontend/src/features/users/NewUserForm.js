@@ -4,13 +4,13 @@ import { useNavigate } from "react-router-dom" // Hook for navigating between ro
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faSave } from "@fortawesome/free-solid-svg-icons"
 import { ROLES } from "../../config/roles"
+import useTitle from "../../hooks/useTitle"
 
 const USER_REGEX = /^[A-Za-z]{3,20}$/ // Username must be 3-20 letters
 const PWD_REGEX = /^[A-Za-z0-9!@#$%]{4,12}$/ // Password must be 4-12 characters
 
 const NewUserForm = () => {
-    // Custom hook to add a new user, with states for loading, success,
-    // error status
+    useTitle('techNotes: New User')
     const [addNewUser, {
         isLoading,
         isSuccess,
@@ -79,9 +79,6 @@ const NewUserForm = () => {
     })
 
     const errClass = isError ? "errmsg" : "offscreen"
-    const validUserClass = !validUsername ? 'form__input--incomplete' : ''
-    const validPwdClass = !validPassword ? 'form__input--incomplete' : ''
-    const validRolesClass = !Boolean(roles.length) ? 'form__input--incomplete' : ''
 
     const content = (
         <>
@@ -104,7 +101,7 @@ const NewUserForm = () => {
                     Username: <span className="nowrap">[3-20 letters]</span>
                 </label>
                 <input
-                    className={`form__input ${validUserClass}`}
+                    className='form__input'
                     id="username"
                     name="username"
                     type="text"
@@ -117,7 +114,7 @@ const NewUserForm = () => {
                     Password: <span className="nowrap">[4-12 chars incl. !@#$%]</span>
                 </label>
                 <input
-                    className={`form__input ${validPwdClass}`}
+                    className='form__input'
                     id="password"
                     name="password"
                     type="password"
@@ -131,7 +128,7 @@ const NewUserForm = () => {
                 <select
                     id="roles"
                     name="roles"
-                    className={`form__select ${validRolesClass}`}
+                    className='form__select'
                     multiple={true}
                     size="3"
                     value={roles}

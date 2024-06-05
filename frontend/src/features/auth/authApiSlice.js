@@ -19,6 +19,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 try {
                     await queryFulfilled
                     dispatch(logOut())
+                    
                 } catch (error) {
                     console.error('Logout failed:', error)
                 }
