@@ -31,8 +31,19 @@ const noteSchema = new mongoose.Schema(
 
 noteSchema.pre('save', async function(next) {
     if (this.isNew) {
-        const lastNote = await mongoose.model('Note').findOne().sort({ createdAt: -1 })
-        this.ticket = lastNote && lastNote.ticket ? lastNote.ticket + 1 : 500
+        let ticketNumber = 500
+        let ticketFound = false
+
+        while (!ticketFound) {
+            const existingNote = await mongoose.model('Note').findOne({ ticket: ticketNumber })
+            if (!existingNote) {
+                ticketFound = true
+            } else {
+                ticketNumber++
+            }
+        }
+
+        this.ticket = ticketNumber
     }
     next()
 })

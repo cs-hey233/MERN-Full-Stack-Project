@@ -3,6 +3,7 @@ import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUserById } from "./usersApiSlice";
+import { memo } from "react";
 
 const User = ({ userId }) => {
     const user = useSelector(state => selectUserById(state, userId))
@@ -33,4 +34,6 @@ const User = ({ userId }) => {
     } else return null
 }
 
-export default User
+const memoizedUser = memo(User)
+
+export default memoizedUser

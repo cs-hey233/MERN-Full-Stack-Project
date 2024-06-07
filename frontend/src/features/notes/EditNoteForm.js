@@ -46,8 +46,6 @@ const EditNoteForm = ({ note, users }) => {
 
     const onSaveNoteClicked = async (e) => {
         if (canSave) {
-            console.log("something")
-            console.log(completed)
             await updateNote({ id: note.id, user: userId, title, text, completed })
         }
     }
@@ -82,8 +80,9 @@ const EditNoteForm = ({ note, users }) => {
             <option
                 key={user.id}
                 value={user.id}
-
-            > {user.username}</option >
+            >
+                {user.username}
+            </option >
         )
     })
 

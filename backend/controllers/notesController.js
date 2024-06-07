@@ -18,10 +18,10 @@ const getAllNotes = asyncHandler(async (req, res) => {
         const user = await User.findById(note.user).lean().exec()
 
         if (!user) {
-            return { ...note, user: "Unknown User" }
+            return { ...note, username: "Unknown User" }
         }
         
-        return { ...note, user: user.username }
+        return { ...note, username: user.username }
         
     }))
 
@@ -88,7 +88,6 @@ const updateNote = asyncHandler(async (req, res) => {
     const duplicate = await Note.findOne({ title }).collation({ locale: 'en', strength: 2 }).lean().exec()
     
     if (duplicate && duplicate._id.toString() !== id) {
-        console.log(duplicate)
         return res.status(409).json({ message: 'Duplicate note title' })
     }
 
