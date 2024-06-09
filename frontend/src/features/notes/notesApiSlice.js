@@ -5,18 +5,20 @@ import {
 import { apiSlice } from "../../app/api/apiSlice";
 
 const notesAdapter = createEntityAdapter({
-    sortComparer: (a, b) => (a.completed === b.completed) ? 0 : a.completed ? 1 : -1
-});
+    sortComparer: (a, b) => (a.completed === b.completed) ? a.updatedAt < b.updatedAt ? 1 : -1 : a.completed ? 1 : -1
+})
 
-const initialState = notesAdapter.getInitialState();
+const initialState = notesAdapter.getInitialState()
 
 export const notesApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         getNotes: builder.query({
-            query: () => '/notes',
-            validateStatus: (response, result) => {
-                return response.status === 200 && !result.isError
-            },
+            query: () => ({
+                url: '/notes',
+                validateStatus: (response, result) => {
+                    return response.status === 200 && !result.isError
+                }
+            }),
             transformResponse: responseData => {
                 const loadedNotes = responseData.map(note => {
                     note.id = note._id
@@ -24,13 +26,13 @@ export const notesApiSlice = apiSlice.injectEndpoints({
                 });
                 return notesAdapter.setAll(initialState, loadedNotes)
             },
-            provideTags: (result, error, arg) => {
+            providesTags: (result, error, arg) => {
                 if (result?.ids) {
                     return [
                         { type: 'Note', id: 'LIST' },
-                        ...result.ids.map(id => ({type: 'Note', id}))
+                        ...result.ids.map(id => ({ type: 'Note', id }))
                     ]
-                } else return [{ type: 'Note', id: 'LIST'}]
+                } else return [{ type: 'Note', id: 'LIST' }]
             }
         }),
         addNewNote: builder.mutation({
@@ -41,8 +43,8 @@ export const notesApiSlice = apiSlice.injectEndpoints({
                     ...initialNote
                 }
             }),
-            invalidatesTags: (result, error, arg) => [
-                {type: 'Note', id: 'LIST' }
+            invalidatesTags: [
+                { type: 'Note', id: "LIST" }
             ]
         }),
         updateNote: builder.mutation({
@@ -64,7 +66,7 @@ export const notesApiSlice = apiSlice.injectEndpoints({
                 body: { id }
             }),
             invalidatesTags: (result, error, arg) => [
-                { type: 'Note', id: arg.id}
+                { type: 'Note', id: arg.id }
             ]
         })
     })
