@@ -1,12 +1,11 @@
 const User = require('../models/User')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const asyncHandler = require('express-async-handler')
 
 // @desc Login
 // @route POST /auth
 // @access Public
-const login = asyncHandler(async (req, res) => {
+const login = async (req, res) => {
     if (!req.body.username || !req.body.password) {
         return res.status(400).json({ message: "All fields are required" })
     }
@@ -47,7 +46,7 @@ const login = asyncHandler(async (req, res) => {
     )
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 7 * 24 * 60 * 60 * 1000 })
     res.status(200).json({ accessToken })
-})
+}
 
 // @desc Refresh
 // @route GET /auth/refresh
@@ -56,7 +55,7 @@ const login = asyncHandler(async (req, res) => {
 // when the client anticipates that the access token will expire soon.
 // It requires a valid non-expired refresh token, which the client should send as a cookie.
 // If the refresh token is valid, a new access token is issued to the client.
-const refresh = asyncHandler(async (req, res) => {
+const refresh = async (req, res) => {
     const { refreshToken } = req.cookies
     
     if (!refreshToken) {
@@ -83,14 +82,14 @@ const refresh = asyncHandler(async (req, res) => {
             res.status(401).json({ message: "Unauthorized: Invalid refresh token" })
         }
     }
-})
+}
 
 // @desc Logout
 // @route POST /auth/logout
 // @access Public
 const logout = (req, res) => {
     if (req.cookies.refreshToken) {
-        res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'None' })
+        res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'None', secure: true })
     }
     res.status(200).json({ message: "Logged out successfully" })
 }
