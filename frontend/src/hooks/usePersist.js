@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-export default () => {
+export default function usePersist() {
     const [persist, setPersist] = useState(JSON.parse(localStorage.getItem("persist")) || false)
     
     useEffect(() => {
